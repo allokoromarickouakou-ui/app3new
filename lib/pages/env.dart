@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'ecran_historique_crises.dart';
+import 'ecran_alertes_predictions.dart';
+import 'ecran_profil.dart';
 
 // Page Environnement - Qualité de l'air
 // Fichier : /lib/pages/env.dart
@@ -418,6 +421,24 @@ class EnvironnementPage extends StatelessWidget {
           if (index == 0) {
             // Retour à la page Accueil (retour à la première page)
             Navigator.popUntil(context, (route) => route.isFirst);
+          } else if (index == 2) {
+            // Navigation vers Crises
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const EcranHistoriqueCrises()),
+            );
+          } else if (index == 3) {
+            // Navigation vers Alertes
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const EcranAlertesPredictions()),
+            );
+          } else if (index == 4) {
+            // Navigation vers Profil
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const EcranProfil()),
+            );
           }
         },
         items: const [

@@ -190,6 +190,12 @@ class _AccueilPageState extends State<AccueilPage> {
                                 MaterialPageRoute(builder: (c) => const RemissionPage())
                               );
                             }
+                            else if (selectedOption == 'ecran_alertes_predictions') {
+                              Navigator.push(
+                                context, 
+                                MaterialPageRoute(builder: (c) => const RemissionPage())
+                              );
+                            }
 
                             // Pour la rémission, créer une autre page plus tard
                           },

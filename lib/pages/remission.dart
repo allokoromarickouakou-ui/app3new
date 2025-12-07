@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'env.dart'; // Import de la page environnement
+import 'ecran_historique_crises.dart';
+import 'ecran_alertes_predictions.dart';
+import 'ecran_profil.dart';
 
 // Page Rémission - Pour les anciens asthmatiques stabilisés
 // Fichier : /lib/pages/remission.dart
@@ -487,6 +490,24 @@ class RemissionPage extends StatelessWidget {
               context,
               MaterialPageRoute(builder: (context) => const EnvironnementPage()),
             );
+          } else if (index == 2) {
+            // Navigation vers Crises
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const EcranHistoriqueCrises()),
+            );
+          } else if (index == 3) {
+            // Navigation vers Alertes
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const EcranAlertesPredictions()),
+            );
+          } else if (index == 4) {
+            // Navigation vers Profil
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const EcranProfil()),
+            );
           }
         },
         items: const [
@@ -497,7 +518,12 @@ class RemissionPage extends StatelessWidget {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.insert_drive_file_outlined),
+            activeIcon: Icon(Icons.insert_drive_file),
             label: 'Environnement',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.show_chart),
+            label: 'Crises',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.info_outline),
