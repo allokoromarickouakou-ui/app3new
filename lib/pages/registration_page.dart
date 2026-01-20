@@ -4,6 +4,8 @@ import 'package:APP3/pages/asthmatique.dart';
 import 'package:APP3/pages/protection.dart';
 import 'package:APP3/pages/remission.dart';
 import 'package:APP3/state/app_state.dart';
+import 'package:APP3/services/auth_service.dart';
+import 'package:APP3/pages/login_page.dart'; // Import de la page de login
 
 class RegistrationPage extends StatefulWidget {
   const RegistrationPage({super.key});
@@ -18,8 +20,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _passwordConfirmController = TextEditingController();
+  final AuthService _authService = AuthService();
 
   String? _selectedProfileType;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -30,7 +34,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
     super.dispose();
   }
 
-  void _register() {
+  Future<void> _register() async {
     if (_formKey.currentState!.validate()) {
       if (_selectedProfileType == null) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -38,28 +42,47 @@ class _RegistrationPageState extends State<RegistrationPage> {
         );
         return;
       }
-      
-      // Navigation vers la page correspondante
-      Widget page;
-      switch (_selectedProfileType) {
-        case 'patient':
-          AppState.hideCrises = false;
-          page = const AsthmatiquePage();
-          break;
-        case 'prevention':
-          AppState.hideCrises = true;
-          page = const ProtectionPage();
-          break;
-        case 'remission':
-          AppState.hideCrises = true;
-          page = const RemissionPage();
-          break;
-        default:
-          return;
-      }
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => page),
+
+      setState(() => _isLoading = true);
+
+      final success = await _authService.login(
+        _emailController.text, 
+        _passwordController.text
       );
+
+      setState(() => _isLoading = false);
+
+      if (success) {
+        Widget page;
+        switch (_selectedProfileType) {
+          case 'patient':
+            AppState.hideCrises = false;
+            page = const AsthmatiquePage();
+            break;
+          case 'prevention':
+            AppState.hideCrises = true;
+            page = const ProtectionPage();
+            break;
+          case 'remission':
+            AppState.hideCrises = true;
+            page = const RemissionPage();
+            break;
+          default:
+            return;
+        }
+
+        if (mounted) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => page),
+          );
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Erreur de connexion au serveur. Vérifiez vos identifiants.')),
+          );
+        }
+      }
     }
   }
 
@@ -106,7 +129,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: const Text('RespirIA', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87)),
+        title: const Text('RespirIA', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue)),
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
@@ -120,12 +143,12 @@ class _RegistrationPageState extends State<RegistrationPage> {
               padding: const EdgeInsets.all(24.0),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(16.0),
+                borderRadius: BorderRadius.circular(20.0),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.blue.withAlpha(30),
-                    spreadRadius: 4,
-                    blurRadius: 20,
+                    color: Colors.blue.withAlpha(20),
+                    spreadRadius: 5,
+                    blurRadius: 25,
                     offset: const Offset(0, 10),
                   ),
                 ],
@@ -142,10 +165,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold, color: Colors.blue[800]),
                     ),
                     const SizedBox(height: 8),
-                    Text(
+                    const Text(
                       'Rejoignez notre communauté en quelques étapes.',
                       textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
+                      style: TextStyle(color: Colors.grey),
                     ),
                     const SizedBox(height: 32),
                     TextFormField(
@@ -155,12 +178,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         prefixIcon: Icon(Icons.person_outline),
                         border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Veuillez entrer un nom d'utilisateur";
-                        }
-                        return null;
-                      },
+                      validator: (value) => (value == null || value.isEmpty) ? "Champ requis" : null,
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
@@ -171,12 +189,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
                       ),
                       keyboardType: TextInputType.emailAddress,
-                      validator: (value) {
-                        if (value == null || value.isEmpty || !value.contains('@')) {
-                          return 'Veuillez entrer un email valide';
-                        }
-                        return null;
-                      },
+                      validator: (value) => (value == null || value.isEmpty || !value.contains('@')) ? 'Email invalide' : null,
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
@@ -187,12 +200,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         prefixIcon: Icon(Icons.lock_outline),
                         border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
                       ),
-                      validator: (value) {
-                        if (value == null || value.length < 8) {
-                          return 'Le mot de passe doit contenir au moins 8 caractères';
-                        }
-                        return null;
-                      },
+                      validator: (value) => (value == null || value.length < 8) ? 'Minimum 8 caractères' : null,
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
@@ -203,12 +211,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         prefixIcon: Icon(Icons.lock_person_outlined),
                         border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
                       ),
-                      validator: (value) {
-                        if (value != _passwordController.text) {
-                          return 'Les mots de passe ne correspondent pas';
-                        }
-                        return null;
-                      },
+                      validator: (value) => (value != _passwordController.text) ? 'Mots de passe différents' : null,
                     ),
                     const SizedBox(height: 24),
                     Text(
@@ -219,17 +222,32 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     _buildProfileTypeChips(),
                     const SizedBox(height: 32),
                     ElevatedButton(
-                      onPressed: _register,
+                      onPressed: _isLoading ? null : _register,
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                         backgroundColor: Colors.blue[700],
                         foregroundColor: Colors.white,
-                        elevation: 5,
+                        elevation: 2,
                       ),
-                      child: const Text("S'inscrire", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                      child: _isLoading 
+                        ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                        : const Text("S'INSCRIRE", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    ),
+                    const SizedBox(height: 24),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text("Déjà un compte ?"),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(builder: (context) => const LoginPage()),
+                            );
+                          },
+                          child: const Text("Se connecter", style: TextStyle(fontWeight: FontWeight.bold)),
+                        ),
+                      ],
                     ),
                   ],
                 ),

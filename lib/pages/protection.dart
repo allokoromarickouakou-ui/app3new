@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'env.dart'; // Import de la page environnement
+import 'env.dart';
 import 'ecran_historique_crises.dart';
 import 'ecran_alertes_predictions.dart';
 import 'ecran_profil.dart';
 import '../state/app_state.dart';
+import '../widgets/chatbot_button.dart';
 
-// Page Protection - Pour les utilisateurs en prévention
-// Fichier : /lib/pages/protection.dart
 class ProtectionPage extends StatelessWidget {
   const ProtectionPage({super.key});
 
@@ -14,712 +13,112 @@ class ProtectionPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[50],
-      
-      // === BARRE DU HAUT ===
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
+        leading: const Padding(
+          padding: EdgeInsets.all(8.0),
           child: CircleAvatar(
             backgroundColor: Colors.blue,
-            child: const Text(
-              'S',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
-            ),
+            child: Text('S', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20)),
           ),
         ),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Bonjour Sophie',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
-            ),
+            Text('Bonjour ${AppState.userName}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87)),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-              decoration: BoxDecoration(
-                color: Colors.blue.shade100,
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: const Text(
-                'Protégé',
-                style: TextStyle(
-                  fontSize: 11,
-                  color: Colors.blue,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
+              decoration: BoxDecoration(color: Colors.blue.shade100, borderRadius: BorderRadius.circular(4)),
+              child: const Text('Profil Protection', style: TextStyle(fontSize: 11, color: Colors.blue, fontWeight: FontWeight.w600)),
             ),
           ],
         ),
         actions: [
-          Stack(
-            children: [
-              IconButton(
-                icon: const Icon(Icons.notifications_outlined, color: Colors.black54),
-                onPressed: () {},
-              ),
-              Positioned(
-                right: 8,
-                top: 8,
-                child: Container(
-                  width: 8,
-                  height: 8,
-                  decoration: const BoxDecoration(
-                    color: Colors.red,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-              ),
-            ],
-          ),
+          IconButton(icon: const Icon(Icons.notifications_outlined, color: Colors.black54), onPressed: () {}),
         ],
       ),
-      
-      // === CONTENU ===
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // === 1. CARTE POUMONS PROTÉGÉS (EN PREMIER) ===
+            // CARTE QUALITÉ AIR RÉELLE
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
+              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10)]),
               child: Column(
-                children: [   
-                  // Icône poumons
-                  Image.network(
-                    'https://cdn-icons-png.flaticon.com/512/2920/2920369.png',
-                    height: 80,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Icon(Icons.air, size: 80, color: Colors.pink.shade200);
-                    },
-                  ),
+                children: [
+                  const Icon(Icons.air, size: 80, color: Colors.blue),
                   const SizedBox(height: 20),
-                  const Text(
-                    'VOS POUMONS SONT PROTÉGÉS',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Qualité environnement',
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Colors.grey[600],
-                    ),
-                  ),
+                  const Text('QUALITÉ DE L\'AIR ACTUELLE', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, letterSpacing: 0.5)),
                   const SizedBox(height: 16),
-                  const Text(
-                    '85',
-                    style: TextStyle(
-                      fontSize: 56,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.green,
-                    ),
-                  ),
-                  Text(
-                    '/100',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey[600],
-                    ),
-                  ),
+                  Text('${AppState.aqi}', style: const TextStyle(fontSize: 56, fontWeight: FontWeight.bold, color: Colors.green)),
+                  Text(AppState.aqiLevel, style: TextStyle(fontSize: 16, color: Colors.grey[600], fontWeight: FontWeight.bold)),
                 ],
               ),
             ),
-            
             const SizedBox(height: 24),
-            
-            // === 2. ENVIRONNEMENT ACTUEL ===
-            const Text(
-              'Environnement actuel',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
-            ),
-            
+            const Text('Environnement et Météo', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
-            
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  Container(
-                    width: 100,
-                    height: 100,
-                    decoration: const BoxDecoration(
-                      color: Colors.green,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Center(
-                      child: Text(
-                        '32',
-                        style: TextStyle(
-                          fontSize: 40,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  const Text(
-                    'Qualité de l\'air',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.green.shade100,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Text(
-                      'BON',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.green,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Sortie sans risque',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            
+            _buildInfoRow('Température', '${AppState.temperature}°C', Icons.thermostat, Colors.orange),
+            const SizedBox(height: 8),
+            _buildInfoRow('Humidité', '${AppState.humidity}%', Icons.water_drop, Colors.blue),
+            const SizedBox(height: 8),
+            _buildInfoRow('Particules PM2.5', '${AppState.pm25} µg/m³', Icons.grain, Colors.grey),
             const SizedBox(height: 24),
-            
-            // === 3. NIVEAU DE POLLEN ===
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(Icons.eco_outlined, color: Colors.yellow.shade700, size: 24),
-                          const SizedBox(width: 8),
-                          const Text(
-                            'Niveau de pollen',
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: Colors.yellow.shade100,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Text(
-                          'ÉLEVÉ',
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.orange,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  _buildPollenBar('Graminées', 7, 10),
-                  const SizedBox(height: 12),
-                  _buildPollenBar('Arbres', 3, 10),
-                  const SizedBox(height: 16),
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.orange.shade50,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.orange.shade200, width: 1),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(Icons.masks, color: Colors.orange.shade700, size: 20),
-                        const SizedBox(width: 8),
-                        const Expanded(
-                          child: Text(
-                            'Portez masque si allergique',
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Colors.orange,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            
-            const SizedBox(height: 24),
-            
-            // === 4. CARTE MÉTÉO ===
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.wb_sunny_outlined, color: Colors.blue.shade400, size: 24),
-                      const SizedBox(width: 8),
-                      const Text(
-                        'Météo',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Température',
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          const Text(
-                            '28°C',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Container(
-                        width: 1,
-                        height: 50,
-                        color: Colors.grey[300],
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Humidité',
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          const Text(
-                            '65%',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: Colors.green.shade50,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Text(
-                      'Conditions favorables',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.green,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            
-            const SizedBox(height: 20),
-            
-            // === 5. CARTE INTERACTIVE ===
-            Container(
-              height: 140,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Colors.green.shade100,
-                    Colors.yellow.shade100,
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      'Carte interactive',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.auto_awesome, size: 16, color: Colors.orange.shade700),
-                        const SizedBox(width: 4),
-                        Text(
-                          'Meilleurs parcs à proximité',
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: Colors.grey[700],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            
-            const SizedBox(height: 24),
-            
-            // === 6. CONSEILS DU JOUR ===
-            const Text(
-              'Conseils du jour',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
-            ),
-            
+            const Text('Conseil IA', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
-            
-            _buildAdviceCard(
-              Icons.check_circle,
-              'Bon moment pour exercice extérieur',
-              Colors.green,
-            ),
-            const SizedBox(height: 8),
-            _buildAdviceCard(
-              Icons.warning_amber_rounded,
-              'Évitez sortie matinale (pollen)',
-              Colors.orange,
-            ),
-            const SizedBox(height: 8),
-            _buildAdviceCard(
-              Icons.water_drop,
-              'Buvez 2L d\'eau aujourd\'hui',
-              Colors.blue,
-            ),
-            
-            const SizedBox(height: 24),
-            
-            // === 7. COMMENT VOUS SENTEZ-VOUS ? ===
             Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(color: Colors.green.shade50, borderRadius: BorderRadius.circular(12), border: Border.all(color: Colors.green.shade200)),
+              child: const Row(
                 children: [
-                  const Text(
-                    'Comment vous sentez-vous ?',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      _buildMoodButton('😊', 'Très bien'),
-                      _buildMoodButton('😐', 'Normal'),
-                      _buildMoodButton('😩', 'Fatigué'),
-                    ],
-                  ),
+                  Icon(Icons.check_circle, color: Colors.green),
+                  SizedBox(width: 12),
+                  Expanded(child: Text('L\'air est pur à Abidjan. Vous pouvez sortir sans masque en toute sécurité.', style: TextStyle(fontSize: 13))),
                 ],
               ),
             ),
-            
             const SizedBox(height: 80),
           ],
         ),
       ),
-      
-      // === BARRE DE NAVIGATION ===
-      bottomNavigationBar: Builder(builder: (context) {
-        final hide = AppState.hideCrises;
-        final labels = hide
-            ? ['Accueil', 'Environnement', 'Alertes', 'Profil']
-            : ['Accueil', 'Environnement', 'Crises', 'Alertes', 'Profil'];
-        final currentIndex = labels.indexOf('Accueil');
-        return BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          selectedItemColor: Colors.blue,
-          unselectedItemColor: Colors.grey[600],
-          currentIndex: currentIndex >= 0 ? currentIndex : 0,
-          selectedFontSize: 12,
-          unselectedFontSize: 12,
-          backgroundColor: Colors.white,
-          elevation: 8,
-          onTap: (index) {
-            final label = labels[index];
-            if (label == 'Accueil') {
-              Navigator.popUntil(context, (route) => route.isFirst);
-            } else if (label == 'Environnement') {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const EnvironnementPage()),
-              );
-            } else if (label == 'Crises') {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const EcranHistoriqueCrises()),
-              );
-            } else if (label == 'Alertes') {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const EcranAlertesPredictions()),
-              );
-            } else if (label == 'Profil') {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const EcranProfil()),
-              );
-            }
-          },
-          items: AppState.hideCrises
-              ? const [
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.home_outlined),
-                    label: 'Accueil',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.insert_drive_file),
-                    activeIcon: Icon(Icons.insert_drive_file),
-                    label: 'Environnement',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.info_outline),
-                    label: 'Alertes',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.person_outline),
-                    label: 'Profil',
-                  ),
-                ]
-              : const [
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.home_outlined),
-                    activeIcon: Icon(Icons.home),
-                    label: 'Accueil',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.insert_drive_file_outlined),
-                    activeIcon: Icon(Icons.insert_drive_file),
-                    label: 'Environnement',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.show_chart),
-                    label: 'Crises',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.info_outline),
-                    label: 'Alertes',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.person_outline),
-                    label: 'Profil',
-                  ),
-                ],
-        );
-      }),
+      floatingActionButton: const ChatbotButton(),
+      bottomNavigationBar: _buildBottomNav(context),
     );
   }
 
-  // === CONSEIL/ADVICE CARD ===
-  Widget _buildAdviceCard(IconData icon, String text, Color color) {
+  Widget _buildInfoRow(String label, String value, IconData icon, Color color) {
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
-      ),
+      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
       child: Row(
         children: [
-          Icon(icon, color: color, size: 24),
+          Icon(icon, color: color),
           const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              text,
-              style: const TextStyle(
-                fontSize: 13,
-                color: Colors.black87,
-              ),
-            ),
-          ),
+          Text(label, style: const TextStyle(fontSize: 14)),
+          const Spacer(),
+          Text(value, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         ],
       ),
     );
   }
 
-  // === BARRE POLLEN ===
-  Widget _buildPollenBar(String name, int value, int max) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          name,
-          style: const TextStyle(
-            fontSize: 13,
-            color: Colors.black87,
-          ),
-        ),
-        Text(
-          '$value/$max',
-          style: TextStyle(
-            fontSize: 13,
-            color: Colors.grey[600],
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
-    );
-  }
-
-  // === BOUTON MOOD/HUMEUR ===
-  Widget _buildMoodButton(String emoji, String label) {
-    return Column(
-      children: [
-        Container(
-          width: 60,
-          height: 60,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Center(
-            child: Text(
-              emoji,
-              style: const TextStyle(fontSize: 32),
-            ),
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
-            color: Colors.grey[700],
-          ),
-        ),
-      ],
+  Widget _buildBottomNav(BuildContext context) {
+    final labels = ['Accueil', 'Environnement', 'Alertes', 'Profil'];
+    return BottomNavigationBar(
+      type: BottomNavigationBarType.fixed,
+      selectedItemColor: Colors.blue,
+      currentIndex: 0,
+      onTap: (index) {
+        final label = labels[index];
+        if (label == 'Environnement') Navigator.push(context, MaterialPageRoute(builder: (c) => const EnvironnementPage()));
+        if (label == 'Alertes') Navigator.push(context, MaterialPageRoute(builder: (c) => const EcranAlertesPredictions()));
+        if (label == 'Profil') Navigator.push(context, MaterialPageRoute(builder: (c) => const EcranProfil()));
+      },
+      items: labels.map((l) => BottomNavigationBarItem(icon: const Icon(Icons.circle, size: 0), label: l)).toList(),
     );
   }
 }

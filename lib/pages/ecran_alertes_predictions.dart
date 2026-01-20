@@ -4,6 +4,7 @@ import 'env.dart';
 import 'ecran_historique_crises.dart';
 import 'ecran_profil.dart';
 import '../state/app_state.dart';
+import '../widgets/chatbot_button.dart';
 
 // Définit un nouveau widget pour l'écran des alertes et des prédictions.
 class EcranAlertesPredictions extends StatelessWidget {
@@ -101,6 +102,8 @@ class EcranAlertesPredictions extends StatelessWidget {
         ],
       ),
       ),
+      
+      floatingActionButton: const ChatbotButton(),
       
       // === BARRE DE NAVIGATION ===
       bottomNavigationBar: Builder(builder: (context) {
